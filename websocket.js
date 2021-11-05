@@ -5,7 +5,7 @@ const Evento = require('./models/Evento');
 const db = require('./models/db');
  
 //Porta que o server irá escutar
-const port = 8080;
+const port = 3334;
 
 //Cria o server
 var server = http.createServer();
@@ -24,17 +24,15 @@ wsServer = new WebSocketServer({
   httpServer: server
 });
 
-
-//console.log(user.every(user => user instanceof Usuario));
-//console.log("All Users:", JSON.stringify(user, NULL, 2));
-
 //Chamado quando um client deseja conectar
 wsServer.on('request', (request) => {
-    //Estado do led: false para desligado e true para ligado
-    //let state = false;
+
+    //console.log(request)
 
     //Aceita a conexão do client
     let client = request.accept(null, request.origin);
+
+    console.log(client)
 
     //Chamado quando o client envia uma mensagem
     client.on('message', (message) => {
@@ -52,7 +50,6 @@ wsServer.on('request', (request) => {
                 // 1 = leituras    
                     case 0:
                         Evento.max('id').then(function(max){
-                            console.log('Máximo: '+max);
                             var controladorid_recebido = stringPost[1];
                             var evento_recebido = stringPost[2];
                             Evento.create({
@@ -65,7 +62,6 @@ wsServer.on('request', (request) => {
                     case 1:
                         //var registroid_recebido = parseInt(stringPost[1]);
                         Leitura.max('id').then(function(max){
-                            console.log('Máximo: '+max);
                             var idmax = max+1;
                             var controladorid_recebido = stringPost[1];
                             var dispositivoid_recebido = stringPost[2];
@@ -80,7 +76,6 @@ wsServer.on('request', (request) => {
                             });
                         });
                         Evento.max('id').then(function(max){
-                            console.log('Máximo: '+max);
                             var controladorid_recebido = stringPost[1];
                             var evento_recebido = 'Leitura realizada';
                             Evento.create({
